@@ -3,9 +3,10 @@
 import argparse
 import json
 import os
+import re
 
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 __all__ = ("parse",)
 
 
@@ -52,11 +53,15 @@ def main():
     with open(args.file) as f:
         text = f.read()
 
+    # Remove comments
+    text = re.sub(r"//.+?\n", "\n", text)
+
+    out, _ = parse(text)
+
     outfile = args.out
     if not outfile:
         outfile = os.path.basename(args.file) + ".json"
 
-    out, _ = parse(text)
     with open(outfile, "w") as f:
         json.dump(out, f)
 
